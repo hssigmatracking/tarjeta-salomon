@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Salomon Husney – Sigma Tracking</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#262836; --bg2:#1E2030; --text:#FFFFFF; --muted:#B9BCCB; --rule:rgba(255,255,255,.55);
+  --blue:#4F5BE0; --brand:#E02B2B; --green:#3DB57E; --red:#E5495C; --amber:#E2A024; --orange:#E2703A;
+  --bar:#DADBE0; --bar-ink:#262836;
+  color-scheme:dark;
+}
+/* La tarjeta es oscura en ambos modos, como el diseño impreso */
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){ --bg:#262836; --bg2:#1E2030; } }
+:root[data-theme="light"],:root[data-theme="dark"]{ --bg:#262836; --bg2:#1E2030; }
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0; background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%) fixed; background-color:var(--bg);
+  color:var(--text); font-family:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:430px; margin:0 auto; padding:22px 22px 28px; min-height:100%; display:flex; flex-direction:column}
+
+.top{position:relative; background:#FFFFFF; border-radius:24px; padding:18px 42px 16px; display:flex; align-items:center; justify-content:center}
+.logo{display:block; width:100%; max-width:300px; height:auto}
+.share{position:absolute; top:8px; right:8px; background:none; border:0; padding:6px; color:#262836; cursor:pointer; border-radius:10px}
+.share svg{width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:2.2; stroke-linecap:round}
+.who{margin-top:22px}
+.who h1{margin:0; font-family:"Sora",sans-serif; font-weight:700; font-size:22px; letter-spacing:-.01em}
+.who p{margin:2px 0 0; color:var(--muted); font-size:15px}
+
+.section{display:flex; justify-content:space-between; align-items:center; margin-top:28px; padding-bottom:10px; border-bottom:1.5px solid var(--rule)}
+.section h2{margin:0; font-size:19px; font-weight:700}
+.section .status{display:flex; gap:10px; align-items:center; color:var(--text)}
+.section .status svg{width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
+
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:22px}
+.tile{
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+  min-height:128px; padding:16px 10px; border-radius:24px; border:0;
+  color:#fff; text-decoration:none; font:700 18px "Manrope",system-ui,sans-serif; cursor:pointer;
+  transition:transform .12s ease, filter .12s ease;
+}
+.tile:active{transform:scale(.96); filter:brightness(1.08)}
+.tile svg{width:52px; height:52px}
+.tile.big{grid-column:1 / -1; min-height:150px}
+.tile.big svg{width:62px; height:62px}
+.t-blue{background:var(--blue)} .t-brand{background:var(--brand)} .t-green{background:var(--green)} .t-red{background:var(--red)}
+.t-amber{background:var(--amber)} .t-orange{background:var(--orange)}
+.ico-fill{fill:#fff}
+.ico-line{fill:none; stroke:#fff; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round}
+
+.services{margin-top:26px}
+.services p{margin:0 0 10px; font-size:14px; color:var(--muted); text-align:center}
+.bar{display:flex; justify-content:space-around; align-items:center; background:var(--bar); border-radius:26px; padding:12px 8px}
+.bar a{display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--bar-ink); text-decoration:none; font-size:11px; font-weight:700; padding:4px 6px; border-radius:12px; min-width:56px}
+.bar a:active{background:rgba(0,0,0,.08)}
+.bar svg{width:28px; height:28px; fill:var(--bar-ink)}
+
+.foot{margin-top:auto; padding-top:24px; text-align:center; font-size:12px; color:var(--muted)}
+.foot a{color:var(--muted)}
+
+a:focus-visible,button:focus-visible{outline:3px solid #fff; outline-offset:3px}
+
+.toast{position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom,0px)); transform:translate(-50%,20px);
+  background:#fff; color:var(--bar-ink); padding:12px 16px; border-radius:14px; font-size:14px; font-weight:600;
+  max-width:calc(100% - 40px); opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; text-align:center}
+.toast.show{opacity:1; transform:translate(-50%,0)}
+
+/* Entrada: los mosaicos aparecen una sola vez al abrir la tarjeta */
+.grid .tile{animation:pop .45s cubic-bezier(.2,.9,.3,1.3) both}
+.grid .tile:nth-child(2){animation-delay:.06s} .grid .tile:nth-child(3){animation-delay:.12s}
+.grid .tile:nth-child(4){animation-delay:.18s} .grid .tile:nth-child(5){animation-delay:.24s}
+@keyframes pop{from{opacity:0; transform:scale(.9) translateY(10px)}to{opacity:1; transform:none}}
+@media (prefers-reduced-motion: reduce){ .grid .tile{animation:none} }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <img class="logo" alt="Sigma Tracking" src="logo.webp" width="420" height="151">
+    <button class="share" id="share" type="button" aria-label="Compartir tarjeta">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </header>
+
+  <section class="who">
+    <h1>Salomon Husney</h1>
+    <p>Gerente General</p>
+  </section>
+
+  <div class="section">
+    <h2>Mi contacto</h2>
+    <div class="status" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M6 8a8 8 0 0 1 0 8M10 6a12 12 0 0 1 0 12M14 4a16 16 0 0 1 0 16"/></svg>
+    </div>
+  </div>
+
+  <nav class="grid" aria-label="Acciones de contacto">
+    <button class="tile big t-brand" id="save" type="button">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <rect x="6" y="8" width="52" height="40" rx="8" class="ico-fill"/>
+        <path d="M22 48 18 58l12-10" class="ico-fill"/>
+        <circle cx="26" cy="24" r="6" fill="#E02B2B"/>
+        <path d="M15 40c1.5-6 6-9 11-9s9.5 3 11 9" fill="#E02B2B"/>
+        <path d="M44 22v12M38 28h12" stroke="#E02B2B" stroke-width="3.5" stroke-linecap="round"/>
+      </svg>
+      Guardar contacto
+    </button>
+
+    <a class="tile t-green" href="https://wa.me/50766163423?text=Hola%20Salomon%2C%20te%20escribo%20desde%20tu%20tarjeta%20digital." target="_blank" rel="noopener">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <path class="ico-fill" d="M32 6a26 26 0 0 0-22.4 39.2L6 58l13.2-3.5A26 26 0 1 0 32 6z"/>
+        <path fill="#3DB57E" transform="translate(19 18) scale(.5)" d="M21 8c1.6 0 3 1 3.5 2.6l3 9.5a4 4 0 0 1-1 4l-4.2 4.2a32 32 0 0 0 13.4 13.4l4.2-4.2a4 4 0 0 1 4-1l9.5 3c1.6.5 2.6 1.9 2.6 3.5V52a5 5 0 0 1-5 5C29 57 7 35 7 13a5 5 0 0 1 5-5z"/>
+      </svg>
+      WhatsApp
+    </a>
+
+    <a class="tile t-blue" href="tel:+50766163423">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <path class="ico-fill" d="M21 8c1.6 0 3 1 3.5 2.6l3 9.5a4 4 0 0 1-1 4l-4.2 4.2a32 32 0 0 0 13.4 13.4l4.2-4.2a4 4 0 0 1 4-1l9.5 3c1.6.5 2.6 1.9 2.6 3.5V52a5 5 0 0 1-5 5C29 57 7 35 7 13a5 5 0 0 1 5-5z"/>
+      </svg>
+      Llamar
+    </a>
+
+    <a class="tile t-amber" href="mailto:salomon.husney@sigmatracking.com">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <rect x="6" y="13" width="52" height="38" rx="7" class="ico-fill"/>
+        <path d="m10 18 22 16 22-16" fill="none" stroke="#E2A024" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Correo
+    </a>
+
+    <a class="tile t-orange" href="https://www.sigmatracking.com" target="_blank" rel="noopener">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <path class="ico-fill" d="M32 4C21 4 13 12.6 13 23c0 14 19 37 19 37s19-23 19-37C51 12.6 43 4 32 4z"/>
+        <circle cx="32" cy="23" r="8" fill="#E2703A"/>
+      </svg>
+      Sitio web
+    </a>
+  </nav>
+
+  <section class="services" aria-label="Servicios">
+    <p>¿Qué necesitas rastrear? Toca y te escribo</p>
+    <div class="bar">
+      <a href="https://wa.me/50766163423?text=Hola%20Salomon%2C%20me%20interesa%20el%20rastreo%20GPS%20para%20mi%20flota." target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11a2 2 0 0 1 2 2v4h-2a2 2 0 1 1-4 0H9a2 2 0 1 1-4 0H3v-4a2 2 0 0 1 2-2zm2.2 0h9.6l-1.1-3.5H8.3z"/></svg>
+        Flotas
+      </a>
+      <a href="https://wa.me/50766163423?text=Hola%20Salomon%2C%20me%20interesa%20el%20rastreo%20GPS%20para%20mi%20veh%C3%ADculo%20personal." target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M12 11c-3.3 0-6 2.2-6 5v3h12v-3c0-2.8-2.7-5-6-5z"/></svg>
+        Personal
+      </a>
+      <a href="https://wa.me/50766163423?text=Hola%20Salomon%2C%20me%20interesa%20el%20monitoreo%20de%20temperatura%20(cadena%20de%20fr%C3%ADo)." target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M10 3a2 2 0 0 1 4 0v10.3a4.5 4.5 0 1 1-4 0zm2 11a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>
+        Frío
+      </a>
+      <a href="https://wa.me/50766163423?text=Hola%20Salomon%2C%20me%20interesa%20el%20rastreo%20de%20activos%20o%20equipos." target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M12 2 3 6.5v11L12 22l9-4.5v-11zm0 2.2 6.6 3.3L12 10.8 5.4 7.5zM5 9.1l6 3v7.6l-6-3zm8 10.6v-7.6l6-3v7.6z"/></svg>
+        Activos
+      </a>
+    </div>
+  </section>
+
+  <footer class="foot">
+    Sigma Tracking · Panamá · <a href="https://www.sigmatracking.com" target="_blank" rel="noopener">sigmatracking.com</a>
+  </footer>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const vcard = [
+  "BEGIN:VCARD","VERSION:3.0",
+  "N:Husney;Salomon;;;","FN:Salomon Husney",
+  "ORG:Sigma Tracking","TITLE:Gerente General",
+  "TEL;TYPE=CELL,VOICE:+50766163423",
+  "EMAIL;TYPE=WORK:salomon.husney@sigmatracking.com",
+  "URL:https://www.sigmatracking.com",
+  "ADR;TYPE=WORK:;;;;;;Panamá",
+  "NOTE:Rastreo GPS de flotas, vehículos, activos y cadena de frío.",
+  "END:VCARD"
+].join("\r\n");
+
+const toast = document.getElementById("toast");
+function showToast(msg){
+  toast.textContent = msg;
+  toast.classList.add("show");
+  clearTimeout(showToast.t);
+  showToast.t = setTimeout(() => toast.classList.remove("show"), 3800);
+}
+
+document.getElementById("save").addEventListener("click", () => {
+  const blob = new Blob([vcard], {type:"text/vcard;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "Salomon-Husney-Sigma-Tracking.vcf";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
+document.getElementById("share").addEventListener("click", async () => {
+  const data = {title:"Salomon Husney – Sigma Tracking", url:location.href};
+  try {
+    if (navigator.share) { await navigator.share(data); return; }
+    await navigator.clipboard.writeText(location.href);
+    showToast("Enlace copiado");
+  } catch (e) {
+    if (e && e.name !== "AbortError") showToast("No se pudo compartir desde aquí");
+  }
+});
+</script>
+</body>
+</html>
