@@ -83,6 +83,28 @@ a:focus-visible,button:focus-visible{outline:3px solid #fff; outline-offset:3px}
 @keyframes pop{from{opacity:0; transform:scale(.9) translateY(10px)}to{opacity:1; transform:none}}
 @media (prefers-reduced-motion: reduce){ .grid .tile{animation:none} }
 </style>
+<style>
+/* Ajuste: la tarjeta cabe en una sola pantalla del celular */
+html,body{height:100%}
+.wrap{min-height:100%; padding:14px 18px 12px; justify-content:center}
+.top{padding:12px 40px 10px; border-radius:20px}
+.logo{max-width:220px}
+.who{margin-top:14px}
+.who h1{font-size:20px}
+.who p{font-size:14px}
+.section{margin-top:14px; padding-bottom:8px}
+.section h2{font-size:17px}
+.grid{gap:10px; margin-top:14px}
+.tile{min-height:clamp(70px,11dvh,118px); padding:10px 8px; gap:6px; border-radius:20px; font-size:16px}
+.tile svg{width:clamp(30px,5dvh,44px); height:clamp(30px,5dvh,44px)}
+.tile.big{min-height:clamp(80px,13dvh,136px)}
+.tile.big svg{width:clamp(36px,6dvh,52px); height:clamp(36px,6dvh,52px)}
+.services{margin-top:14px}
+.services p{margin:0 0 8px; font-size:13px}
+.bar{padding:8px 6px; border-radius:22px}
+.bar svg{width:24px; height:24px}
+.foot{margin-top:12px; padding-top:0; font-size:11px}
+</style>
 </head>
 <body>
 <main class="wrap">
